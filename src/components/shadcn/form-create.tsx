@@ -10,7 +10,7 @@ import {
 } from "../ui/card";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { ReactNode, useRef, useState } from "react";
 import {
   Binoculars,
   BriefcaseBusiness,
@@ -30,9 +30,10 @@ import { addMarker } from "@/utils/indexedDBhelpers";
 import { useStore } from "@/zustand";
 import { shuffle } from "@/utils";
 import { experiences } from "@/categories";
+import { toaster } from "./app-toaster";
 
 export const FormCreate = () => {
-  const { setValue, mapCircle } = useStore((state) => state);
+  const { setValue } = useStore((state) => state);
   const ref = useRef(null);
   const [images, setImages] = useState<File[]>([]);
   const [poi, setPoi] = useState<{
@@ -325,8 +326,26 @@ export const FormCreate = () => {
               setPoi({ address: "" });
               setImages([]);
               setValue(shuffle("change".split("")).join(""));
+
+              toaster({
+                title: "Experience Added",
+                description:
+                  "You have added your experience on the map successfully.",
+                action: {
+                  label: "Ok",
+                  onClick: () => {},
+                },
+              });
             } catch (e) {
               console.error("error ", e);
+              toaster({
+                title: "Error",
+                description: "Error adding experience.",
+                action: {
+                  label: "Ok",
+                  onClick: () => {},
+                },
+              });
             }
           }}
           disabled={!geo.address || !geo.category}

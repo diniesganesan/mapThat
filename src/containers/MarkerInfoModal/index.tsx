@@ -1,3 +1,4 @@
+import { toaster } from "@/components/shadcn/app-toaster";
 import { Images } from "@/components/shadcn/carousel";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -23,8 +24,24 @@ const MarkerInfoModal = ({ marker }: Props) => {
     try {
       await removeMarker(marker);
       setValue(shuffle("change".split("")).join(""));
+      toaster({
+        title: "Experience Removed",
+        description: "You have removed your experience on the map successfully.",
+        action: {
+          label: "Ok",
+          onClick: () => {},
+        },
+      });
     } catch (e) {
       console.error(e);
+      toaster({
+        title: "Error",
+        description: "Error removing experience.",
+        action: {
+          label: "Ok",
+          onClick: () => {},
+        },
+      });
     }
   };
 
