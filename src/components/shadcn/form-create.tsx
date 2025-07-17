@@ -108,26 +108,24 @@ export const FormCreate = () => {
   async function getLatLng() {
     if (!poi.address) return;
 
-    const apiKey = API_KEY;
-    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
-      poi.address
-    )}&key=${apiKey}`;
-
     try {
-      const res = await fetch(url);
-      const data = await res.json();
-      if (data.status === "OK") {
-        const result = data.results[0];
-        setGeo((prev) => ({
-          ...prev,
-          address: result.formatted_address,
-          lat: result.geometry.location.lat,
-          lng: result.geometry.location.lng,
-        }));
-      } else {
-        console.error("Geocoding failed:", data.status);
-        return null;
-      }
+      const geocoder = new google.maps.Geocoder();
+      geocoder.geocode({ address: poi.address }, (results, status) => {
+        if (results && status === "OK") {
+          const formatted_address = results[0].formatted_address;
+          const { lat, lng } = results[0].geometry.location;
+          const latitude = lat();
+          const longitude = lng();
+          setGeo((prev) => ({
+            ...prev,
+            address: formatted_address,
+            lat: latitude,
+            lng: longitude,
+          }));
+        } else {
+          console.error("Geocode failed: " + status);
+        }
+      });
     } catch (err) {
       console.error("Fetch error:", err);
       return null;
