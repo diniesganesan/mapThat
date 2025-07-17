@@ -25,8 +25,8 @@ const MarkerInfoModal = ({ marker }: Props) => {
       await removeMarker(marker);
       setValue(shuffle("change".split("")).join(""));
       toaster({
-        title: "Experience Removed",
-        description: "You have removed your experience on the map successfully.",
+        title: "Ouch!",
+        description: "You have removed your experience from the map successfully.",
         action: {
           label: "Ok",
           onClick: () => {},
@@ -35,8 +35,8 @@ const MarkerInfoModal = ({ marker }: Props) => {
     } catch (e) {
       console.error(e);
       toaster({
-        title: "Error",
-        description: "Error removing experience.",
+        title: "Oops!",
+        description: "Unable to remove experience.",
         action: {
           label: "Ok",
           onClick: () => {},

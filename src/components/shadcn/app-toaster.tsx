@@ -6,8 +6,12 @@ interface Props {
   action?: { label: string; onClick: () => void };
 }
 export const toaster = ({ description, title, action }: Props) => {
-  toast(title, {
-    description,
-    action,
-  });
+  let timer = setTimeout(() => {
+    toast(title, {
+      description,
+      action,
+    });
+
+    return () => clearTimeout(timer);
+  }, 500);
 };

@@ -124,6 +124,12 @@ export const FormCreate = () => {
           }));
         } else {
           console.error("Geocode failed: " + status);
+
+          toaster({
+            title: "Oops!",
+            description: "Unable to find location.",
+            action: { label: "Ok", onClick: () => {} },
+          });
         }
       });
     } catch (err) {
@@ -326,7 +332,7 @@ export const FormCreate = () => {
               setValue(shuffle("change".split("")).join(""));
 
               toaster({
-                title: "Experience Added",
+                title: "Hooray!",
                 description:
                   "You have added your experience on the map successfully.",
                 action: {
@@ -337,8 +343,8 @@ export const FormCreate = () => {
             } catch (e) {
               console.error("error ", e);
               toaster({
-                title: "Error",
-                description: "Error adding experience.",
+                title: "Oops!",
+                description: "Unable to add experience.",
                 action: {
                   label: "Ok",
                   onClick: () => {},
