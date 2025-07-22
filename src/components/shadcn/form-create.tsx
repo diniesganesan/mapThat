@@ -364,7 +364,7 @@ export const FormCreate = () => {
             <div className="grid gap-2">
               <Label htmlFor="comments">Note your experience</Label>
               <Textarea
-                placeholder="Comment your experience here."
+                placeholder="Express your experience here."
                 value={geo.description}
                 onChange={(e) =>
                   setGeo((prev) => ({
