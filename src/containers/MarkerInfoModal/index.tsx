@@ -26,7 +26,7 @@ const MarkerInfoModal = ({ marker }: Props) => {
       setValue(shuffle("change".split("")).join(""));
       toaster({
         title: "Ouch!",
-        description: "You have removed your experience from the map successfully.",
+        description: "You have removed your experience from the map.",
         action: {
           label: "Ok",
           onClick: () => {},

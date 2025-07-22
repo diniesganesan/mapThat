@@ -1,4 +1,3 @@
-import { API_KEY } from "@/utils/constants";
 import { Button } from "../ui/button";
 import {
   Card,
@@ -10,7 +9,7 @@ import {
 } from "../ui/card";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { ReactNode, useRef, useState } from "react";
+import { ReactElement, useRef, useState } from "react";
 import {
   Binoculars,
   BriefcaseBusiness,
@@ -19,6 +18,7 @@ import {
   Check,
   Dumbbell,
   Locate,
+  LocateFixed,
   Star,
   Utensils,
 } from "lucide-react";
@@ -31,6 +31,7 @@ import { useStore } from "@/zustand";
 import { shuffle } from "@/utils";
 import { experiences } from "@/categories";
 import { toaster } from "./app-toaster";
+import { Tooltip } from "./app-tooltip";
 
 export const FormCreate = () => {
   const { setValue } = useStore((state) => state);
@@ -77,7 +78,7 @@ export const FormCreate = () => {
     return "";
   }
 
-  const markerType: { value: string; icon: ReactNode; tooltip: string }[] = [
+  const markerType: { value: string; icon: ReactElement; tooltip: string }[] = [
     {
       icon: <Binoculars className="h-4 w-4" />,
       value: "bird_watching",
@@ -105,7 +106,9 @@ export const FormCreate = () => {
     },
   ];
 
-  async function getLatLng() {
+  async function getLatLng(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+    e.preventDefault();
+
     if (!poi.address) return;
 
     try {
@@ -125,6 +128,13 @@ export const FormCreate = () => {
         } else {
           console.error("Geocode failed: " + status);
 
+          setGeo((prev) => ({
+            ...prev,
+            address: "",
+          }));
+
+          setPoi({ address: "" });
+
           toaster({
             title: "Oops!",
             description: "Unable to find location.",
@@ -137,6 +147,54 @@ export const FormCreate = () => {
       return null;
     }
   }
+
+  const getCurrentLocation = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.preventDefault();
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+
+          try {
+            const geocoder = new google.maps.Geocoder();
+            geocoder.geocode({ location: { lat, lng } }, (results, status) => {
+              if (results && status === "OK") {
+                const formatted_address = results[0].formatted_address;
+                const { lat, lng } = results[0].geometry.location;
+                const latitude = lat();
+                const longitude = lng();
+                setGeo((prev) => ({
+                  ...prev,
+                  address: formatted_address,
+                  lat: latitude,
+                  lng: longitude,
+                }));
+              } else {
+                console.error("Geocode failed: " + status);
+
+                toaster({
+                  title: "Oops!",
+                  description: "Unable to find location.",
+                  action: { label: "Ok", onClick: () => {} },
+                });
+              }
+            });
+          } catch (err) {
+            console.error("Fetch error:", err);
+            return null;
+          }
+        },
+        (error) => {
+          console.error("Error getting location:", error);
+        }
+      );
+    } else {
+      console.error("Geolocation is not supported by this browser.");
+    }
+  };
 
   const handleImage = () => {
     if (ref.current) {
@@ -186,10 +244,21 @@ export const FormCreate = () => {
                     }))
                   }
                 />
-                <div className="content-center pl-1">
-                  <Button variant="outline" size="sm" onClick={getLatLng}>
-                    <Locate />
-                  </Button>
+                <div className="items-center pl-1 flex gap-1">
+                  <Tooltip tooltip="Find Location">
+                    <Button variant="outline" size="sm" onClick={getLatLng}>
+                      <Locate />
+                    </Button>
+                  </Tooltip>
+                  <Tooltip tooltip="Set Current Location">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={getCurrentLocation}
+                    >
+                      <LocateFixed />
+                    </Button>
+                  </Tooltip>
                 </div>
               </div>
               {geo.address && (
