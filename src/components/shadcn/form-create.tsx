@@ -128,10 +128,15 @@ export const FormCreate = () => {
         } else {
           console.error("Geocode failed: " + status);
 
-          setGeo((prev) => ({
-            ...prev,
+          setGeo({
             address: "",
-          }));
+            category: null,
+            description: "",
+            id: "",
+            lat: 0,
+            lng: 0,
+            type: "",
+          });
 
           setPoi({ address: "" });
 
