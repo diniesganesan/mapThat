@@ -1,5 +1,6 @@
 ## Video
 [README.md] (https://github.com/diniesganesan/mapThat)
+Website: (mapthat.netlify.app)
 
 ## Inspiration
 We wanted to create a way for people to go beyond static maps and reviews—to capture and share meaningful experiences tied to real locations. Whether it’s the best spot to work remotely, a hidden bird-watching trail, or a memorable event, there wasn’t a simple way to map personal moments in a structured, discoverable way. That’s how MapThat was born.
